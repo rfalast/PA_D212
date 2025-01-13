@@ -13,7 +13,7 @@ class test_PCA_Analysis(unittest.TestCase):
     # constants
     OVERRIDE_PATH = "../../../resources/Output/"
     VALID_CSV_PATH = "../../../resources/Input/churn_raw_data.csv"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     VALID_COLUMN_1 = "Age"
     VALID_COLUMN_2 = "Tenure"
     VALID_COLUMN_INDEX = ["Age", "Tenure", "MonthlyCharge", "Bandwidth_GB_Year", "Yearly_equip_failure",

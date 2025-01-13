@@ -27,7 +27,7 @@ from model.analysis.StatisticsGenerator import StatisticsGenerator
 from model.analysis.models.Logistic_Model import Logistic_Model
 from model.analysis.models.Logistic_Model_Result import Logistic_Model_Result
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN, ANALYZE_DATASET_INITIAL, \
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, ANALYZE_DATASET_INITIAL, \
     MT_LINEAR_REGRESSION, MT_LOGISTIC_REGRESSION, MT_KNN_CLASSIFICATION, MT_RF_REGRESSION
 from model.constants.DatasetConstants import FLOAT64_COLUMN_KEY, INT64_COLUMN_KEY, OBJECT_COLUMN_KEY, BOOL_COLUMN_KEY
 from model.constants.ModelConstants import LM_INITIAL_MODEL, LM_FINAL_MODEL
@@ -41,7 +41,7 @@ from util.CSV_loader import CSV_Loader
 # Test the PlotGenerator class.
 class test_PlotGenerator(unittest.TestCase):
     # constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     DEFAULT_PATH = "resources/Output/Hist_#.png"
     OVERRIDE_PATH = "../../../resources/Output/"
     BAD_OVERRIDE_PATH = "/bar/foo/"
@@ -135,7 +135,7 @@ class test_PlotGenerator(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test init method()
     def test_init_negative(self):
@@ -3836,19 +3836,26 @@ class test_PlotGenerator(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -4168,19 +4175,26 @@ class test_PlotGenerator(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)

@@ -7,7 +7,7 @@ from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Detector import Detector
 from model.analysis.models.Linear_Model import Linear_Model
 from model.analysis.models.ModelBase import ModelBase
-from model.constants.BasicConstants import TIMEZONE_COLUMN, ANALYZE_DATASET_FULL, D_209_CHURN, MT_LINEAR_REGRESSION, \
+from model.constants.BasicConstants import TIMEZONE_COLUMN, ANALYZE_DATASET_FULL, D_212_CHURN, MT_LINEAR_REGRESSION, \
     MT_LOGISTIC_REGRESSION, MT_KNN_CLASSIFICATION, MT_RF_REGRESSION
 from model.constants.DatasetConstants import COLUMN_KEY, COLUMN_COUNT_KEY, COLUMN_NA_COUNT, COLUMN_TOTAL_COUNT_KEY, \
     UNIQUE_COLUMN_VALUES, INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY, OBJECT_COLUMN_KEY, BOOL_COLUMN_KEY, BOOL_VALUE_KEY, \
@@ -22,7 +22,7 @@ class test_DatasetAnalyzer(unittest.TestCase):
     # constants
     VALID_CSV_PATH = "../../../resources/Input/churn_raw_data.csv"
     OVERRIDDEN_LOCATION = "../../../resources/Output/"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     VALID_COLUMN_1 = "Age"
     VALID_COLUMN_2 = "Tenure"
     Z_SCORE = "_z_score"
@@ -55,7 +55,7 @@ class test_DatasetAnalyzer(unittest.TestCase):
     VALID_COLUMN_DROP_LIST_2 = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction',
                                 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test case for init
     def test_init(self):

@@ -5,7 +5,7 @@ from scipy.stats import chi2_contingency, chi2
 from model.Project_Assessment import Project_Assessment
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.StatisticsGenerator import StatisticsGenerator
-from model.constants.BasicConstants import D_209_CHURN, ANALYZE_DATASET_FULL
+from model.constants.BasicConstants import D_212_CHURN, ANALYZE_DATASET_FULL
 from model.constants.DatasetConstants import BOOL_COLUMN_KEY, FLOAT64_COLUMN_KEY, INT64_COLUMN_KEY, COLUMN_KEY, \
     OBJECT_COLUMN_KEY, DATA_TYPE_KEYS
 from model.constants.StatisticsConstants import CORR_EXCEED_LEVEL, ALL_CORRELATIONS, DIST_NAME, DIST_PARAMETERS
@@ -16,7 +16,7 @@ from util.CommonUtils import are_tuples_the_same
 class test_Statistics(unittest.TestCase):
     # constants
     VALID_CSV_PATH = "../../../resources/Input/churn_raw_data.csv"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -24,7 +24,7 @@ class test_Statistics(unittest.TestCase):
                          "Item7": "Courteous_Exchange", "Item8": "Active_Listening"}
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
-    DATASET_KEY_NAME = D_209_CHURN
+    DATASET_KEY_NAME = D_212_CHURN
 
     # test init method
     def test_init_negative(self):

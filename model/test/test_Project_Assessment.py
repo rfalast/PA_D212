@@ -14,7 +14,7 @@ from model.analysis.models.Logistic_Model import Logistic_Model
 from model.analysis.models.Logistic_Model_Result import Logistic_Model_Result
 from model.analysis.models.Random_Forest_Model import Random_Forest_Model
 from model.analysis.models.Random_Forest_Model_Result import Random_Forest_Model_Result
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN, CHURN_CSV_FILE_LOCATION, \
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, CHURN_CSV_FILE_LOCATION, \
     MT_LOGISTIC_REGRESSION, MT_LINEAR_REGRESSION, MT_KNN_CLASSIFICATION, MT_RF_REGRESSION
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.PCA_Analysis import PCA_Analysis
@@ -44,7 +44,7 @@ class test_Project_Assessment(unittest.TestCase):
                            "PC5": "Yearly_equip_failure", "PC6": "Contacts", "PC7": "Outage_sec_perweek", "PC8": "foo"}
 
     INVALID_BASE_DIR = "/users/foo"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
 
     INVALID_FIELD_DICT = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
                           "Item4": "Reliability", "Item5": "Options", "Item6": "Respectful_Response",
@@ -67,7 +67,7 @@ class test_Project_Assessment(unittest.TestCase):
                              'Respectful_Response_z_score', 'Courteous_Exchange_z_score',
                              'Active_Listening_z_score']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative tests for init() method
     def test_init_negative(self):

@@ -3,28 +3,25 @@ import unittest
 import numpy
 import numpy as np
 import pandas as pd
-from numpy import float64
+
 from pandas import DataFrame, Series
-from scipy.stats import chi2
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif, f_regression
 from sklearn.metrics import r2_score, mean_squared_error
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, KFold
+from sklearn.model_selection import train_test_split, GridSearchCV, KFold
 from sklearn.preprocessing import StandardScaler
-
 from model.Project_Assessment import Project_Assessment
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
-from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.Random_Forest_Model import Random_Forest_Model
 from model.analysis.models.Random_Forest_Model_Result import Random_Forest_Model_Result
-from model.constants.BasicConstants import D_209_CHURN, ANALYZE_DATASET_FULL, MT_RF_CLASSIFICATION, MT_RF_REGRESSION
+from model.constants.BasicConstants import D_212_CHURN, ANALYZE_DATASET_FULL, MT_RF_CLASSIFICATION, MT_RF_REGRESSION
 from model.constants.DatasetConstants import INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY
 from model.constants.ModelConstants import X_TRAIN, Y_TRAIN, Y_TEST, X_TEST, X_ORIGINAL
 
 
 class test_Random_Forest_Model(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -33,7 +30,7 @@ class test_Random_Forest_Model(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # proof of concept for a Random Forest
     def test_random_forest_proof_of_concept(self):

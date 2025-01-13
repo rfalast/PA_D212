@@ -8,7 +8,7 @@ from sklearn import metrics
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import CHURN_FINAL, D_209_CHURN, CHURN_X_TRAIN, CHURN_X_TEST, CHURN_Y_TRAIN, \
+from model.constants.BasicConstants import CHURN_FINAL, D_212_CHURN, CHURN_X_TRAIN, CHURN_X_TEST, CHURN_Y_TRAIN, \
     CHURN_Y_TEST, CHURN_PREP
 from model.constants.ModelConstants import LM_FEATURE_NUM, LM_PREDICTOR, LM_P_VALUE
 from model.constants.ReportConstants import NUMBER_OF_OBS, MODEL_ACCURACY, MODEL_PRECISION, MODEL_RECALL, \
@@ -24,50 +24,55 @@ class KNN_Model_Result(ModelResultBase):
 
     # init method. Note to self; I need to change the method interface to take a complex object or
     # dictionary with defined keys. The current exposed signature is a complete mess.
-    def __init__(self, the_model: KNeighborsClassifier, the_target_variable: str, the_variables_list: list,
-                 the_f_df_train: DataFrame, the_f_df_test: DataFrame, the_t_var_train: DataFrame,
-                 the_t_var_test: DataFrame, the_encoded_df: DataFrame, the_p_values: DataFrame,
-                 gridsearch: GridSearchCV, prepared_data: DataFrame, cleaned_data: DataFrame):
-        # call super class
-        super().__init__(the_target_variable=the_target_variable,
-                         the_variables_list=the_variables_list,
-                         the_encoded_df=the_encoded_df)
+    def __init__(self, argument_dict: dict):
+        # run initial validation
+        if not isinstance(argument_dict, dict):
+            raise AttributeError("argument_dict is None or incorrect type.")
+        elif "the_model" not in argument_dict:
+            raise AttributeError("the_regression_wrapper is missing.")
+        elif "the_target_variable" not in argument_dict:
+            raise AttributeError("the_target_variable is missing.")
+        elif "the_variables_list" not in argument_dict:
+            raise AttributeError("the_variables_list is missing.")
+        elif "the_f_df_train" not in argument_dict:
+            raise AttributeError("the_f_df_train is missing.")
+        elif "the_f_df_test" not in argument_dict:
+            raise AttributeError("the_f_df_test is missing.")
+        elif "the_t_var_train" not in argument_dict:
+            raise AttributeError("the_t_var_train is missing.")
+        elif "the_t_var_test" not in argument_dict:
+            raise AttributeError("the_t_var_test is missing.")
+        elif "the_encoded_df" not in argument_dict:
+            raise AttributeError("the_encoded_df is missing.")
+        elif "the_p_values" not in argument_dict:
+            raise AttributeError("the_p_values is missing.")
+        elif "gridsearch" not in argument_dict:
+            raise AttributeError("gridsearch is missing.")
+        elif "prepared_data" not in argument_dict:
+            raise AttributeError("prepared_data is missing.")
+        elif "cleaned_data" not in argument_dict:
+            raise AttributeError("cleaned_data is missing.")
 
-        # run validations not handled by super-class.
-        if not isinstance(the_model, KNeighborsClassifier):
-            raise SyntaxError("the_model is None or incorrect type.")
-        elif not isinstance(the_f_df_train, DataFrame):
-            raise SyntaxError("the_f_df_train is None or incorrect type.")
-        elif not isinstance(the_f_df_test, DataFrame):
-            raise SyntaxError("the_f_df_test is None or incorrect type.")
-        elif not isinstance(the_t_var_train, DataFrame):
-            raise SyntaxError("the_t_var_train is None or incorrect type.")
-        elif not isinstance(the_t_var_test, DataFrame):
-            raise SyntaxError("the_t_var_test is None or incorrect type.")
-        elif not isinstance(the_p_values, DataFrame):
-            raise SyntaxError("the_p_values is None or incorrect type.")
-        elif not isinstance(gridsearch, GridSearchCV):
-            raise SyntaxError("gridsearch is None or incorrect type.")
-        elif not isinstance(prepared_data, DataFrame):
-            raise SyntaxError("prepared_data is None or incorrect type.")
-        elif not isinstance(cleaned_data, DataFrame):
-            raise SyntaxError("cleaned_data is None or incorrect type.")
+        # call super class
+        super().__init__(the_target_variable=argument_dict["the_target_variable"],
+                         the_variables_list=argument_dict["the_variables_list"],
+                         the_encoded_df=argument_dict["the_encoded_df"])
 
         # initialize logger
         self.logger = logging.getLogger(__name__)
 
         # define  internal variables
-        self.model = the_model
-        self.y_pred = the_model.predict(the_f_df_test)
-        self.y_scores = the_model.predict_proba(the_f_df_test)
-        self.the_f_df_test = the_f_df_test                      # X_test
-        self.the_f_df_train = the_f_df_train                    # X_train
-        self.the_t_var_test = the_t_var_test                    # Y_test
-        self.the_t_var_train = the_t_var_train                  # Y_train
-        self.the_p_values = the_p_values
-        self.grid_search = gridsearch
-        self.prepared_data = prepared_data
-        self.cleaned_data = cleaned_data
+        self.model = argument_dict["the_model"]
+        self.y_pred = self.model.predict(argument_dict["the_f_df_test"])
+        self.y_scores = self.model.predict_proba(argument_dict["the_f_df_test"])
+        self.the_f_df_test = argument_dict["the_f_df_test"]                         # X_test
+        self.the_f_df_train = argument_dict["the_f_df_train"]                       # X_train
+        self.the_t_var_test = argument_dict["the_t_var_test"]                       # Y_test
+        self.the_t_var_train = argument_dict["the_t_var_train"]                     # Y_train
+        self.the_p_values = argument_dict["the_p_values"]
+        self.grid_search = argument_dict["gridsearch"]
+        self.prepared_data = argument_dict["prepared_data"]
+        self.cleaned_data = argument_dict["cleaned_data"]
 
     # get p-values in the form of a dict.  The key is the name of the feature, the value is the
     # actual p_value associated with the feature.  If the argument less_than is used, you will end
@@ -238,19 +243,19 @@ class KNN_Model_Result(ModelResultBase):
         # CHURN_Y_TEST -> "resources/Output/churn_Y_test.csv"
 
         # write out CHURN_FINAL, the cleaned data set
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_FINAL, the_dataframe=self.cleaned_data)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_FINAL, the_dataframe=self.cleaned_data)
 
         # write out CHURN_PREP, the smaller dataset after feature selection and scaling
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_PREP, the_dataframe=self.prepared_data)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_PREP, the_dataframe=self.prepared_data)
 
         # write out CHURN_X_TRAIN, converting the np.ndarray back to a dataframe.
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_X_TRAIN, the_dataframe=self.the_f_df_train)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_X_TRAIN, the_dataframe=self.the_f_df_train)
 
         # write out CHURN_X_TRAIN, converting the np.ndarray back to a dataframe.
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_X_TEST, the_dataframe=self.the_f_df_test)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_X_TEST, the_dataframe=self.the_f_df_test)
 
         # write out CHURN_Y_TRAIN  the_t_var_train
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_Y_TRAIN, the_dataframe=self.the_t_var_train)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_Y_TRAIN, the_dataframe=self.the_t_var_train)
 
         # write out CHURN_Y_TEST  the_t_var_test
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_Y_TEST, the_dataframe=self.the_t_var_test)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_Y_TEST, the_dataframe=self.the_t_var_test)

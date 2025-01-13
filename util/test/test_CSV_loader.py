@@ -6,8 +6,8 @@ from pathlib import Path, PosixPath
 from pandas import DataFrame
 
 from model.Project_Assessment import Project_Assessment
-from model.constants.BasicConstants import D_209_CHURN, ANALYZE_DATASET_FULL, CHURN_FINAL, CHURN_CSV_FILE_LOCATION, \
-    CHURN_PREP, CHURN_PREP_CSV_FILE_LOCATION, MEDICAL_FINAL, D_209_MEDICAL, MEDICAL_CSV_FILE_LOCATION, MEDICAL_PREP, \
+from model.constants.BasicConstants import D_212_CHURN, ANALYZE_DATASET_FULL, CHURN_FINAL, CHURN_CSV_FILE_LOCATION, \
+    CHURN_PREP, CHURN_PREP_CSV_FILE_LOCATION, MEDICAL_FINAL, D_212_MEDICAL, MEDICAL_CSV_FILE_LOCATION, MEDICAL_PREP, \
     MEDICAL_PREP_FILE_LOCATION, OUTPUT_OPTIONS, MT_LOGISTIC_REGRESSION
 from model.constants.ModelConstants import LM_FINAL_MODEL
 from util.CSV_loader import CSV_Loader
@@ -18,7 +18,7 @@ class test_CSV_loader(unittest.TestCase):
     # constants
     VALID_PATH = "../../resources/Input/churn_raw_data.csv"
     INVALID_PATH = "foo.txt"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDDEN_LOCATION = "../../resources/Output/"
 
     VALID_FIELD_DICT = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -28,7 +28,7 @@ class test_CSV_loader(unittest.TestCase):
     VALID_COLUMN_DROP_LIST_2 = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction',
                                 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test the init() method
     def test_init_no_argument(self):
@@ -134,7 +134,7 @@ class test_CSV_loader(unittest.TestCase):
         # TEST #1
         # invoke method for self.CHURN_KEY, CHURN_FINAL
         the_path = pa.csv_l.generate_output_file_path(data_set=self.CHURN_KEY, option=CHURN_FINAL)
-        the_test_path = "/Users/robertfalast/PycharmProjects/PA_209/" + CHURN_CSV_FILE_LOCATION
+        the_test_path = "/Users/robertfalast/PycharmProjects/PA_212/" + CHURN_CSV_FILE_LOCATION
 
         # run validation
         self.assertIsNotNone(the_path)
@@ -144,7 +144,7 @@ class test_CSV_loader(unittest.TestCase):
         # TEST #2
         # invoke method for self.CHURN_KEY, CHURN_PREP
         the_path = pa.csv_l.generate_output_file_path(data_set=self.CHURN_KEY, option=CHURN_PREP)
-        the_test_path = "/Users/robertfalast/PycharmProjects/PA_209/" + CHURN_PREP_CSV_FILE_LOCATION
+        the_test_path = "/Users/robertfalast/PycharmProjects/PA_212/" + CHURN_PREP_CSV_FILE_LOCATION
 
         # run validation
         self.assertIsNotNone(the_path)
@@ -152,9 +152,9 @@ class test_CSV_loader(unittest.TestCase):
         self.assertEqual(the_path, PosixPath(the_test_path))
 
         # TEST #3
-        # invoke method for D_209_MEDICAL, MEDICAL_FINAL
-        the_path = pa.csv_l.generate_output_file_path(data_set=D_209_MEDICAL, option=MEDICAL_FINAL)
-        the_test_path = "/Users/robertfalast/PycharmProjects/PA_209/" + MEDICAL_CSV_FILE_LOCATION
+        # invoke method for D_212_MEDICAL, MEDICAL_FINAL
+        the_path = pa.csv_l.generate_output_file_path(data_set=D_212_MEDICAL, option=MEDICAL_FINAL)
+        the_test_path = "/Users/robertfalast/PycharmProjects/PA_212/" + MEDICAL_CSV_FILE_LOCATION
 
         # run validation
         self.assertIsNotNone(the_path)
@@ -162,9 +162,9 @@ class test_CSV_loader(unittest.TestCase):
         self.assertEqual(the_path, PosixPath(the_test_path))
 
         # TEST #4
-        # invoke method for D_209_MEDICAL, MEDICAL_FINAL
-        the_path = pa.csv_l.generate_output_file_path(data_set=D_209_MEDICAL, option=MEDICAL_PREP)
-        the_test_path = "/Users/robertfalast/PycharmProjects/PA_209/" + MEDICAL_PREP_FILE_LOCATION
+        # invoke method for D_212_MEDICAL, MEDICAL_FINAL
+        the_path = pa.csv_l.generate_output_file_path(data_set=D_212_MEDICAL, option=MEDICAL_PREP)
+        the_test_path = "/Users/robertfalast/PycharmProjects/PA_212/" + MEDICAL_PREP_FILE_LOCATION
 
         # run validation
         self.assertIsNotNone(the_path)

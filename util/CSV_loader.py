@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from os.path import exists
 from pandas import DataFrame
-from model.constants.BasicConstants import OUTPUT_OPTIONS, D_209_CHURN, CHURN_FINAL
+from model.constants.BasicConstants import OUTPUT_OPTIONS, D_212_CHURN, CHURN_FINAL
 from util.BaseUtil import BaseUtil
 
 

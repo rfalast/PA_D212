@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 from model.Project_Assessment import Project_Assessment
 from model.analysis.StatisticsGenerator import StatisticsGenerator
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN, D_209_MEDICAL
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, D_212_MEDICAL
 from model.constants.DatasetConstants import BOOL_COLUMN_KEY
 from model.constants.StatisticsConstants import ALL_CORRELATIONS
 from util.CommonUtils import CommonUtils, strip_preceding_letter_from_field, strip_trailing_digit_from_field, \
@@ -23,7 +23,7 @@ class test_CommonUtils(unittest.TestCase):
 
     # constants
     VALID_CSV_PATH = "../../../resources/Input/churn_raw_data.csv"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -38,7 +38,7 @@ class test_CommonUtils(unittest.TestCase):
     params_dict_str = ('algorithm: auto, leaf_size: 2, metric: minkowski, metric_params: None, n_jobs: '
                        'None, n_neighbors: 4, p: 1, weights: uniform')
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test the init method
     def test_init(self):

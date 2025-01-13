@@ -9,13 +9,13 @@ from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.Logistic_Model import Logistic_Model, order_features_by_r_squared
 from model.analysis.models.Logistic_Model_Result import Logistic_Model_Result
-from model.constants.BasicConstants import D_209_CHURN, ANALYZE_DATASET_FULL, MT_LOGISTIC_REGRESSION
+from model.constants.BasicConstants import D_212_CHURN, ANALYZE_DATASET_FULL, MT_LOGISTIC_REGRESSION
 from model.constants.ModelConstants import LM_STEP, LM_INITIAL_MODEL, LM_FINAL_MODEL
 
 
 class test_Logistic_Model(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -24,7 +24,7 @@ class test_Logistic_Model(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative tests for the init() method
     def test_init_negative(self):

@@ -5,7 +5,7 @@ from statsmodels.regression.linear_model import RegressionResultsWrapper
 from statsmodels.stats.diagnostic import het_breuschpagan
 from statsmodels.stats.stattools import durbin_watson, jarque_bera
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import D_209_CHURN, CHURN_FINAL, CHURN_PREP
+from model.constants.BasicConstants import D_212_CHURN, CHURN_FINAL, CHURN_PREP
 from model.constants.ModelConstants import LM_P_VALUE,  LM_LAGRANGE_MULTIPLIER_STATISTIC, LM_F_VALUE, LM_F_P_VALUE, \
      LM_JARQUE_BERA_STATISTIC, LM_JARQUE_BERA_PROB, LM_JB_SKEW, LM_JS_KURTOSIS
 from model.constants.ReportConstants import R_SQUARED_HEADER, ADJ_R_SQUARED_HEADER, DURBAN_WATSON_STATISTIC, \
@@ -18,18 +18,34 @@ from util.CSV_loader import CSV_Loader
 class Linear_Model_Result(ModelResultBase):
 
     # init method
-    def __init__(self, the_regression_wrapper, the_target_variable, the_variables_list, the_df):
-        super().__init__(the_target_variable, the_variables_list, the_df)
+    # the_regression_wrapper, the_target_variable, the_variables_list, the_df
+    def __init__(self, argument_dict: dict):
+        # run initial validation
+        if not isinstance(argument_dict, dict):
+            raise AttributeError("argument_dict is None or incorrect type.")
+        elif "the_model" not in argument_dict:
+            raise AttributeError("the_model is missing.")
+        elif "the_target_variable" not in argument_dict:
+            raise AttributeError("the_target_variable is missing.")
+        elif "the_variables_list" not in argument_dict:
+            raise AttributeError("the_variables_list is missing.")
+        elif "the_df" not in argument_dict:
+            raise AttributeError("the_df is missing.")
 
-        # run validation of the_regression_wrapper.  Swap this out with RegressionResults
-        if not isinstance(the_regression_wrapper, RegressionResultsWrapper):
-            raise SyntaxError("the_regression_wrapper is None or incorrect type.")
+        # call super
+        super().__init__(the_target_variable=argument_dict["the_target_variable"],
+                         the_variables_list=argument_dict["the_variables_list"],
+                         the_encoded_df=argument_dict["the_df"])
+
+        # run validation of the_regression_wrapper.
+        if not isinstance(argument_dict["the_model"], RegressionResultsWrapper):
+            raise AttributeError("the_model is None or incorrect type.")
 
         # initialize logger
         self.logger = logging.getLogger(__name__)
 
         # define and capture internal variables
-        self.model = the_regression_wrapper
+        self.model = argument_dict["the_model"]
 
     # getter method for model property
     def get_model(self) -> RegressionResultsWrapper:
@@ -163,5 +179,5 @@ class Linear_Model_Result(ModelResultBase):
         # CHURN_PREP_CSV_FILE_LOCATION -> "resources/Output/churn_prepared.csv"
 
         # write out CHURN_FINAL -> CHURN_CSV_FILE_LOCATION
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_FINAL, the_dataframe=self.the_df)
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_PREP, the_dataframe=self.the_df)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_FINAL, the_dataframe=self.the_df)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_PREP, the_dataframe=self.the_df)

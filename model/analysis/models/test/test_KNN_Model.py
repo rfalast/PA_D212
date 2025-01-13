@@ -17,13 +17,13 @@ from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.KNN_Model import KNN_Model
 from model.analysis.models.KNN_Model_Result import KNN_Model_Result
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN, MT_KNN_CLASSIFICATION
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, MT_KNN_CLASSIFICATION
 from model.constants.DatasetConstants import INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY, BOOL_COLUMN_KEY, OBJECT_COLUMN_KEY
 
 
 class test_KNN_Model(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -32,7 +32,7 @@ class test_KNN_Model(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test method for __init__()
     def test_init(self):

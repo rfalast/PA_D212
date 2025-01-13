@@ -8,7 +8,7 @@ from model.ReportGenerator import ReportGenerator
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.PCA_Analysis import PCA_Analysis
 from model.analysis.PlotGenerator import PlotGenerator
-from model.constants.BasicConstants import ANALYSIS_TYPE, ANALYZE_DATASET_FULL, D_209_CHURN, ANALYZE_DATASET_INITIAL, \
+from model.constants.BasicConstants import ANALYSIS_TYPE, ANALYZE_DATASET_FULL, D_212_CHURN, ANALYZE_DATASET_INITIAL, \
     MT_LOGISTIC_REGRESSION, MT_LINEAR_REGRESSION, MT_KNN_CLASSIFICATION, MT_RF_REGRESSION
 from model.constants.ModelConstants import LM_INITIAL_MODEL, LM_FINAL_MODEL
 from util.CSV_loader import CSV_Loader
@@ -23,7 +23,7 @@ class test_ReportGenerator(unittest.TestCase):
     FULL_OVERRIDE_PATH = "../../resources/Output/DATASET_ANALYSIS.xlsx"
     VALID_CSV_PATH = "../../resources/Input/churn_raw_data.csv"
     VALID_DATAFRAME_XLSX_FILE = "../../resources/Output/DATAFRAME_OUTPUT.xlsx"
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     DATASET_ANALYSIS_LOC = "../../resources/Output/DATASET_ANALYSIS.xlsx"
     INITIAL_DATASET_ANALYSIS_LOC = "../../resources/Output/INITIAL_DATASET_ANALYSIS.xlsx"
 
@@ -37,7 +37,7 @@ class test_ReportGenerator(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     def test_init(self):
         # instantiate a ReportGenerator

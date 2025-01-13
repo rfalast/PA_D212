@@ -6,6 +6,7 @@ from pandas import DataFrame
 from model.analysis.models.Logistic_Model_Result import Logistic_Model_Result
 from model.analysis.models.ModelBase import ModelBase
 from model.constants.BasicConstants import MT_LOGISTIC_REGRESSION
+from util.Model_Result_Populator import Model_Result_Populator
 
 
 # function to order features based on r-squared value
@@ -131,11 +132,17 @@ class Logistic_Model(ModelBase):
         # get the fitted model
         fitted_model = logistic_regression.fit()
 
-        # create the result, and return it.
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable=the_target_column,
-                                           the_variables_list=the_variable_columns,
-                                           the_df=the_variable_df)
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item=the_target_column)
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=the_variable_df)
+
+        # create Linear_Model_Result
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # store the result
         self.the_result = the_result

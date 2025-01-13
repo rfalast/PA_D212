@@ -5,12 +5,12 @@ from pandas import DataFrame, Series
 from model.Project_Assessment import Project_Assessment
 from model.analysis.models.Linear_Model import Linear_Model
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN
 
 
 class test_ModelsBase(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -19,7 +19,7 @@ class test_ModelsBase(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative test method for __init__
     def test__init__negative(self):
@@ -47,28 +47,28 @@ class test_ModelsBase(unittest.TestCase):
         the_variable_columns = linear_model.encoded_df.columns.to_list()
 
         # verify we handle None, None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
             ModelResultBase(the_target_variable=None, the_variables_list=None, the_encoded_df=None)
 
-            # validate the error message.
-            self.assertTrue("the_target_variable is None or incorrect type." in context.exception)
+        # validate the error message.
+        self.assertTrue("the_target_variable is None or incorrect type." in context.exception.args)
 
         # verify we handle 'Churn', None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
             ModelResultBase(the_target_variable='Churn', the_variables_list=None, the_encoded_df=None)
 
-            # validate the error message.
-            self.assertTrue("the_variables_list is None or incorrect type." in context.exception)
+        # validate the error message.
+        self.assertTrue("the_variables_list is None or incorrect type." in context.exception.args)
 
         # verify we handle 'Churn', the_variable_columns, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
             ModelResultBase(the_target_variable='Churn', the_variables_list=the_variable_columns, the_encoded_df=None)
 
-            # validate the error message.
-            self.assertTrue("the_df is None or incorrect type." in context.exception)
+        # validate the error message.
+        self.assertTrue("the_encoded_df is None or incorrect type." in context.exception.args)
 
     # test init() method
     def test_init(self):

@@ -16,18 +16,19 @@ from statsmodels.discrete.discrete_model import BinaryResultsWrapper
 from model.Project_Assessment import Project_Assessment
 from model.analysis.models.Logistic_Model import Logistic_Model
 from model.analysis.models.Logistic_Model_Result import Logistic_Model_Result
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_209_CHURN, MT_LOGISTIC_REGRESSION
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, MT_LOGISTIC_REGRESSION
 from model.constants.ModelConstants import LM_FEATURE_NUM, LM_COEFFICIENT, LM_STANDARD_ERROR, LM_T_STATISTIC, \
     LM_LS_CONF_INT, LM_RS_CONF_INT, LM_VIF, LM_PREDICTOR, LM_P_VALUE, LM_FINAL_MODEL, LM_INITIAL_MODEL
 from model.constants.ReportConstants import PSEUDO_R_SQUARED_HEADER, MODEL_PRECISION, MODEL_RECALL, MODEL_F1_SCORE, \
     MODEL_ACCURACY, AIC_SCORE, BIC_SCORE, LOG_LIKELIHOOD, NUMBER_OF_OBS, DEGREES_OF_FREEDOM_MODEL, \
     DEGREES_OF_FREEDOM_RESID, MODEL_CONSTANT
 from util.CSV_loader import CSV_Loader
+from util.Model_Result_Populator import Model_Result_Populator
 
 
 class test_Logistic_Model_Result(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -36,7 +37,7 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative test method for __init__
     def test__init__negative(self):
@@ -60,14 +61,16 @@ class test_Logistic_Model_Result(unittest.TestCase):
         # create a linear model
         logistic_model = Logistic_Model(dataset_analyzer=pa.analyzer)
 
-        # verify we handle None, None, None, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Logistic_Model_Result(the_regression_wrapper=None, the_target_variable=None,
-                                  the_variables_list=None, the_df=None)
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
 
-            # validate the error message.
-            self.assertTrue("the_regression_wrapper is None or incorrect type." in context.exception)
+        # verify we handle None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Logistic_Model_Result(argument_dict=None)
+
+        # validate the error message.
+        self.assertTrue("argument_dict is None or incorrect type." in context.exception.args)
 
         # get the list of columns
         the_variable_columns = logistic_model.encoded_df.columns.to_list()
@@ -109,29 +112,46 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
-        # verify we handle model, None, None, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Logistic_Model_Result(the_regression_wrapper=fitted_model, the_target_variable=None,
-                                  the_variables_list=None, the_df=None)
+        # get an empty storage
+        the_argument_dict = mrp.get_storage()
 
-            # validate the error message.
-            self.assertTrue("the_target_variable is None or incorrect type." in context.exception)
+        # verify we handle an empty argument_dict
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Logistic_Model_Result(argument_dict=the_argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_model is missing." in context.exception.args)
+
+        # add the the_model
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+
+        # verify we handle model, None, None, None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Logistic_Model_Result(argument_dict=mrp.get_storage())
+
+        # validate the error message.
+        self.assertTrue("the_target_variable is missing." in context.exception.args)
+
+        # add the the_target_variable
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
 
         # verify we handle model, 'Churn', None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Logistic_Model_Result(the_regression_wrapper=fitted_model, the_target_variable='Churn',
-                                  the_variables_list=None, the_df=None)
+            Logistic_Model_Result(argument_dict=mrp.get_storage())
 
-            # validate the error message.
-            self.assertTrue("the_regression_wrapper is None or incorrect type." in context.exception)
+        # validate the error message.
+        self.assertTrue("the_variables_list is missing." in context.exception.args)
+
+        # add the the_variables_list
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
 
         # verify we handle model, 'Churn', the_variable_columns, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Logistic_Model_Result(the_regression_wrapper=fitted_model, the_target_variable='Churn',
-                                  the_variables_list=the_variable_columns, the_df=None)
+            Logistic_Model_Result(argument_dict=mrp.get_storage())
 
             # validate the error message.
             self.assertTrue("the_df is None or incorrect type." in context.exception)
@@ -198,11 +218,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -270,11 +296,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -350,11 +382,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -427,11 +465,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -512,11 +556,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -627,11 +677,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -754,11 +810,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -852,11 +914,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -960,11 +1028,17 @@ class test_Logistic_Model_Result(unittest.TestCase):
 
         fitted_model = logistic_regression.fit()
 
+        # instantiate an instance of Model_Result_Populator
+        mrp = Model_Result_Populator()
+
+        # populate storage
+        mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+        mrp.populate_storage(the_key="the_target_variable", the_item='Churn')
+        mrp.populate_storage(the_key="the_variables_list", the_item=the_variable_columns)
+        mrp.populate_storage(the_key="the_df", the_item=x_val)
+
         # create Linear_Model_Result
-        the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                           the_target_variable='Churn',
-                                           the_variables_list=the_variable_columns,
-                                           the_df=x_val)
+        the_result = Logistic_Model_Result(argument_dict=mrp.get_storage())
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -1519,9 +1593,11 @@ class test_Logistic_Model_Result(unittest.TestCase):
         self.assertEqual(len(the_variable_columns), 47)
         self.assertFalse('Churn' in the_variable_columns)
 
-        # setup the variables we will pass to the method fit_a_model()
+        # set up the variables we will pass to the method fit_a_model()
         the_target_column = 'Churn'
         current_features = the_variable_columns
+
+        # create
 
         # get back the_linear_model_result
         the_logistic_model_result = logistic_model.fit_a_model(the_target_column=the_target_column,

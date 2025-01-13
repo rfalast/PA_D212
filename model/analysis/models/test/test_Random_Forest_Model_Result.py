@@ -1,7 +1,7 @@
 import os
 import unittest
-from os.path import exists
 
+from os.path import exists
 from pandas import DataFrame, Series
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import KFold, GridSearchCV
@@ -11,7 +11,7 @@ from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.models.ModelResultBase import ModelResultBase
 from model.analysis.models.Random_Forest_Model import Random_Forest_Model
 from model.analysis.models.Random_Forest_Model_Result import Random_Forest_Model_Result
-from model.constants.BasicConstants import D_209_CHURN, MT_RF_REGRESSION, ANALYZE_DATASET_FULL
+from model.constants.BasicConstants import D_212_CHURN, MT_RF_REGRESSION, ANALYZE_DATASET_FULL
 from model.constants.ModelConstants import X_TRAIN, Y_TRAIN, Y_TEST, X_ORIGINAL, X_TEST, LM_FEATURE_NUM, LM_P_VALUE, \
     LM_PREDICTOR
 from model.constants.ReportConstants import MODEL_MEAN_ABSOLUTE_ERROR, MODEL_ROOT_MEAN_SQUARED_ERROR, MODEL_R_SQUARED, \
@@ -21,7 +21,7 @@ from util.CSV_loader import CSV_Loader
 
 class test_Random_Forest_Model_Result(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
     VALID_CSV_PATH = "../../resources/Input/churn_raw_data.csv"
 
@@ -34,7 +34,7 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
     params_dict_str = 'bootstrap: True, max_depth: None, max_features: sqrt, min_samples_leaf: 1, ' \
                       'min_samples_split: 2, n_estimators: 300'
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative test method for __init__
     def test_init_negative(self):
@@ -237,6 +237,9 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # create a base RandomForestRegressor to compare with.
         rfr = RandomForestRegressor(random_state=12345, oob_score=True)
 
+        # call fit
+        rfr.fit(the_f_df_train, the_t_var_train)
+
         # Create a parameter grid for GridSearchCV
         param_grid = {'n_estimators': [300, 1000], 'max_features': ['sqrt'],
                       'max_depth': [None, 10, 20], 'min_samples_split': [2, 5],
@@ -252,233 +255,283 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
-        # verify we handle all None(s)
-        with self.assertRaises(SyntaxError) as context:
+        # create the argument_dict
+        argument_dict = dict()
+
+        # verify we handle argument_dict equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=None,
-                                       the_target_variable=None,
-                                       the_variables_list=None,
-                                       the_f_df_train=None,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=None,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=None)
 
         # validate the error message.
-        self.assertEqual("the_target_variable is None or incorrect type.", context.exception.msg)
+        self.assertTrue("argument_dict is None or incorrect type.", context.exception.args)
 
-        # verify we handle when the_model=rfr
-        with self.assertRaises(SyntaxError) as context:
+        # verify we handle the_model key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=None,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=None,
-                                       the_f_df_train=None,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=None,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_variables_list is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_model is missing.", context.exception.args)
 
-        # verify we handle when the_variables_list=current_features_list
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_model'] = None
+
+        # verify we handle the_target_variable key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=None,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=None,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=None,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_encoded_df is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_target_variable is missing.", context.exception.args)
 
-        # verify we handle when the_encoded_df=encoded_df
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_target_variable'] = None
+
+        # verify we handle the_variables_list key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=None,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=None,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_model is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_variables_list is missing.", context.exception.args)
 
-        # verify we handle when the_model=rfr
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_variables_list'] = None
+
+        # verify we handle the_f_df_train key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=None,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_f_df_train is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_f_df_train is missing.", context.exception.args)
 
-        # verify we handle when the_f_df_train=the_f_df_train
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_f_df_train'] = None
+
+        # verify we handle the_f_df_test key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=None,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_f_df_test is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_f_df_test is missing.", context.exception.args)
 
-        # verify we handle when the_f_df_test=the_f_df_test
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_f_df_test'] = None
+
+        # verify we handle the_t_var_train key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=None,
-                                       the_t_var_test=None,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_t_var_train is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_t_var_train is missing.", context.exception.args)
 
-        # verify we handle when the_t_var_train=the_t_var_train
-        with self.assertRaises(SyntaxError) as context:
+        # add the_model key
+        argument_dict['the_t_var_train'] = None
+
+        # verify we handle the_t_var_test key equal to None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=the_t_var_train,
-                                       the_t_var_test=None,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_t_var_test is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_t_var_test is missing.", context.exception.args)
+
+        # add the_model key
+        argument_dict['the_t_var_test'] = None
+
+        # verify we handle the_encoded_df key equal to None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_encoded_df is missing.", context.exception.args)
+
+        # add the_model key
+        argument_dict['the_encoded_df'] = None
+
+        # verify we handle the_p_values key equal to None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_p_values is missing.", context.exception.args)
+
+        # add the_model key
+        argument_dict['the_p_values'] = None
+
+        # verify we handle gridsearch key equal to None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("gridsearch is missing.", context.exception.args)
+
+        # add the_model key
+        argument_dict['gridsearch'] = None
+
+        # verify we handle prepared_data key equal to None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("prepared_data is missing.", context.exception.args)
+
+        # add the_model key
+        argument_dict['prepared_data'] = None
+
+        # verify we handle cleaned_data key equal to None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("cleaned_data is missing.", context.exception.args)
+
+        # add cleaned_data key
+        argument_dict['cleaned_data'] = None
+
+        # verify we handle the_target_variable being none
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_target_variable is None or incorrect type.", context.exception.args)
+
+        # add the_target_column to argument_dict
+        argument_dict['the_target_variable'] = the_target_column
+
+        # verify we handle the_variables_list is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_variables_list is None or incorrect type.", context.exception.args)
+
+        # add the_variables_list to argument_dict
+        argument_dict['the_variables_list'] = current_features_list
+
+        # verify we handle the_encoded_df is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_encoded_df is None or incorrect type.", context.exception.args)
+
+        # add encoded_df to argument_dict
+        argument_dict['the_encoded_df'] = encoded_df
+
+        # verify we handle when the_model is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_model is None or incorrect type.", context.exception.args)
+
+        # add the_model to argument_dict
+        argument_dict['the_model'] = rfr
+
+        # verify we handle when the_f_df_train is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_f_df_train is None or incorrect type.", context.exception.args)
+
+        # add the_f_df_train to argument_dict
+        argument_dict['the_f_df_train'] = the_f_df_train
+
+        # verify we handle when the_f_df_test is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_f_df_test is None or incorrect type.", context.exception.args)
+
+        # add the_f_df_test to argument_dict
+        argument_dict['the_f_df_test'] = the_f_df_test
+
+        # verify we handle when the_t_var_train is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_t_var_train is None or incorrect type.", context.exception.args)
+
+        # add the_t_var_train to argument_dict
+        argument_dict['the_t_var_train'] = the_t_var_train
+
+        # verify we handle when the_t_var_test is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_t_var_test is None or incorrect type.", context.exception.args)
+
+        # add the_t_var_test to argument_dict
+        argument_dict['the_t_var_test'] = the_t_var_test
 
         # verify we handle when he_t_var_test=the_t_var_test
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=the_t_var_train,
-                                       the_t_var_test=the_t_var_test,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=None,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_p_values is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_p_values is None or incorrect type.", context.exception.args)
 
-        # verify we handle when the_p_values=p_values
-        with self.assertRaises(SyntaxError) as context:
+        # add the_p_values to argument_dict
+        argument_dict['the_p_values'] = p_values
+
+        # verify we handle when gridsearch is None
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=the_t_var_train,
-                                       the_t_var_test=the_t_var_test,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=p_values,
-                                       gridsearch=None,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("gridsearch is None or incorrect type.", context.exception.msg)
+        self.assertTrue("gridsearch is None or incorrect type.", context.exception.args)
+
+        # add gridsearch to argument_dict
+        argument_dict['gridsearch'] = grid_search
+
+        # verify we handle when prepared_data is None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            Random_Forest_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("prepared_data is None or incorrect type.", context.exception.args)
+
+        # add gridsearch to argument_dict
+        argument_dict['prepared_data'] = the_current_features_df
 
         # verify we handle when gridsearch=grid_search
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=the_t_var_train,
-                                       the_t_var_test=the_t_var_test,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=p_values,
-                                       gridsearch=grid_search,
-                                       prepared_data=None,
-                                       cleaned_data=None)
+            Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("prepared_data is None or incorrect type.", context.exception.msg)
+        self.assertTrue("cleaned_data is None or incorrect type.", context.exception.args)
 
-        # verify we handle when gridsearch=grid_search
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Random_Forest_Model_Result(the_model=rfr,
-                                       the_target_variable=the_target_column,
-                                       the_variables_list=current_features_list,
-                                       the_f_df_train=the_f_df_train,
-                                       the_f_df_test=the_f_df_test,
-                                       the_t_var_train=the_t_var_train,
-                                       the_t_var_test=the_t_var_test,
-                                       the_encoded_df=encoded_df,
-                                       the_p_values=p_values,
-                                       gridsearch=grid_search,
-                                       prepared_data=the_current_features_df,
-                                       cleaned_data=None)
+        # add gridsearch to argument_dict
+        argument_dict['cleaned_data'] = the_model.encoded_df
 
-        # validate the error message.
-        self.assertEqual("cleaned_data is None or incorrect type.", context.exception.msg)
+        # create Random_Forest_Model_Result successfully to verify we've passed all arguments
+        Random_Forest_Model_Result(argument_dict=argument_dict)
 
     # test method for __init__
     def test_init(self):
@@ -689,19 +742,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -941,19 +1000,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -1188,19 +1253,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -1420,19 +1491,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -1672,19 +1749,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -1902,19 +1985,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -2137,19 +2226,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -2159,6 +2254,7 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # run assertions on params
         self.assertEqual(the_result.get_mean_absolute_error(), 111.0500439299238)
 
+    # test method for get_mean_squared_error()
     def test_get_mean_squared_error(self):
         # create Project_Assessment
         pa = Project_Assessment(base_directory=self.VALID_BASE_DIR,
@@ -2367,19 +2463,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -2597,20 +2699,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
 
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
 
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -2829,19 +2936,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -3060,19 +3173,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -3314,19 +3433,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)
@@ -3552,19 +3677,25 @@ class test_Random_Forest_Model_Result(unittest.TestCase):
         # Fit the grid search to the data
         grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate the argument dict
+        argument_dict['the_model'] = rfr
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = current_features_list
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_f_df_test_orig
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = grid_search
+        argument_dict['prepared_data'] = the_current_features_df
+        argument_dict['cleaned_data'] = the_model.encoded_df
+
         # invoke the method
-        the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                the_target_variable=the_target_column,
-                                                the_variables_list=current_features_list,
-                                                the_f_df_train=the_f_df_train,
-                                                the_f_df_test=the_f_df_test,
-                                                the_t_var_train=the_t_var_train,
-                                                the_t_var_test=the_t_var_test,
-                                                the_encoded_df=the_f_df_test_orig,
-                                                the_p_values=p_values,
-                                                gridsearch=grid_search,
-                                                prepared_data=the_current_features_df,
-                                                cleaned_data=the_model.encoded_df)
+        the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_result)

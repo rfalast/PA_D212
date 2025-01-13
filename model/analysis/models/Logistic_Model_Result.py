@@ -6,7 +6,7 @@ from pandas import DataFrame
 from sklearn import metrics
 from statsmodels.discrete.discrete_model import BinaryResultsWrapper
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import D_209_CHURN, CHURN_FINAL, CHURN_PREP
+from model.constants.BasicConstants import D_212_CHURN, CHURN_FINAL, CHURN_PREP
 from model.constants.ReportConstants import MODEL_ACCURACY, MODEL_PRECISION, MODEL_RECALL, \
     MODEL_F1_SCORE, PSEUDO_R_SQUARED_HEADER, AIC_SCORE, BIC_SCORE, LOG_LIKELIHOOD, NUMBER_OF_OBS, \
     DEGREES_OF_FREEDOM_MODEL, DEGREES_OF_FREEDOM_RESID, MODEL_CONSTANT
@@ -17,21 +17,33 @@ from util.CSV_loader import CSV_Loader
 class Logistic_Model_Result(ModelResultBase):
 
     # init method
-    def __init__(self, the_regression_wrapper, the_target_variable, the_variables_list, the_df):
-        # call super
-        super().__init__(the_target_variable=the_target_variable,
-                         the_variables_list=the_variables_list,
-                         the_encoded_df=the_df)
+    def __init__(self, argument_dict: dict):
+        # run initial validation
+        if not isinstance(argument_dict, dict):
+            raise AttributeError("argument_dict is None or incorrect type.")
+        elif "the_model" not in argument_dict:
+            raise AttributeError("the_model is missing.")
+        elif "the_target_variable" not in argument_dict:
+            raise AttributeError("the_target_variable is missing.")
+        elif "the_variables_list" not in argument_dict:
+            raise AttributeError("the_variables_list is missing.")
+        elif "the_df" not in argument_dict:
+            raise AttributeError("the_df is missing.")
 
-        # run validation of the_regression_wrapper
-        if not isinstance(the_regression_wrapper, BinaryResultsWrapper):
-            raise SyntaxError("the_regression_wrapper is None or incorrect type.")
+        # call super
+        super().__init__(the_target_variable=argument_dict["the_target_variable"],
+                         the_variables_list=argument_dict["the_variables_list"],
+                         the_encoded_df=argument_dict["the_df"])
+
+        # run validation of the_regression_wrapper.
+        if not isinstance(argument_dict["the_model"], BinaryResultsWrapper):
+            raise SyntaxError("the_model is None or incorrect type.")
 
         # initialize logger
         self.logger = logging.getLogger(__name__)
 
         # define and capture internal variables
-        self.model = the_regression_wrapper
+        self.model = argument_dict["the_model"]
 
         # define additional variables
         self.accuracy_score = 0.0
@@ -133,5 +145,5 @@ class Logistic_Model_Result(ModelResultBase):
             raise SyntaxError("csv_loader is None or incorrect type.")
 
         # write out CHURN_FINAL -> CHURN_CSV_FILE_LOCATION
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_FINAL, the_dataframe=self.the_df)
-        csv_loader.generate_output_file(data_set=D_209_CHURN, option=CHURN_PREP, the_dataframe=self.the_df)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_FINAL, the_dataframe=self.the_df)
+        csv_loader.generate_output_file(data_set=D_212_CHURN, option=CHURN_PREP, the_dataframe=self.the_df)

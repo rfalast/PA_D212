@@ -16,7 +16,7 @@ from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.KNN_Model import KNN_Model
 from model.analysis.models.KNN_Model_Result import KNN_Model_Result
 from model.analysis.models.ModelResultBase import ModelResultBase
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, MT_KNN_CLASSIFICATION, D_209_CHURN
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, MT_KNN_CLASSIFICATION, D_212_CHURN
 from model.constants.DatasetConstants import INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY
 from model.constants.ModelConstants import LM_FEATURE_NUM, LM_P_VALUE, LM_PREDICTOR
 from model.constants.ReportConstants import MODEL_ACCURACY, MODEL_AVG_PRECISION, MODEL_F1_SCORE, MODEL_ROC_SCORE, \
@@ -26,7 +26,7 @@ from util.CSV_loader import CSV_Loader
 
 class test_KNN_Model_Result(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
     VALID_CSV_PATH = "../../resources/Input/churn_raw_data.csv"
 
@@ -38,7 +38,7 @@ class test_KNN_Model_Result(unittest.TestCase):
 
     params_dict_str = 'leaf_size: 2, n_neighbors: 4, p: 1'
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative test method for __init__
     def test_init_negative(self):
@@ -268,244 +268,174 @@ class test_KNN_Model_Result(unittest.TestCase):
         # Note: due to the call to the superclass, the variables validated are in this order
         # the_target_variable, the_variables_list, the_encoded_df
 
+        # create the argument_dict
+        argument_dict = dict()
+
         # verify we handle None, None, None, None, None, None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=None,
-                             the_target_variable=None,
-                             the_variables_list=None,
-                             the_f_df_train=None,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=None,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=None)
 
         # validate the error message.
-        self.assertEqual("the_target_variable is None or incorrect type.", context.exception.msg)
+        self.assertTrue("argument_dict is None or incorrect type.", context.exception.args)
+
+        # verify we handle None, None, None, None, None, None, None
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            KNN_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_target_variable is None or incorrect type.", context.exception.args)
+
+        # add the_target_variable
+        argument_dict['the_target_variable'] = 'Churn'
 
         # add the_target_variable, the_variables_list should fail.
         # verify we handle None, 'Churn', None, None, None, None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=None,
-                             the_target_variable='Churn',
-                             the_variables_list=None,
-                             the_f_df_train=None,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=None,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_variables_list is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_variables_list is None or incorrect type.", context.exception.args)
+
+        # add the_target_variable
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
 
         # add the_variables_list, the_encoded_df should fail
         # verify we handle None, 'Churn', the_features_df.columns.to_list(), None, None, None
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=None,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=None,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=None,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_encoded_df is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_encoded_df is None or incorrect type.", context.exception.args)
+
+        # add the_encoded_df
+        argument_dict['the_encoded_df'] = the_features_df
 
         # add the_encoded_df, the_model should fail
         # verify we handle None, 'Churn', the_features_df.columns.to_list(), None, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=None,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=None,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_model is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_model is None or incorrect type.", context.exception.args)
+
+        # add the_model
+        argument_dict['the_model'] = knn
 
         # add the_model, the_f_df_train should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), None, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=None,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_f_df_train is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_f_df_train is None or incorrect type.", context.exception.args)
+
+        # add the_f_df_train
+        argument_dict['the_f_df_train'] = the_f_df_train
 
         # add the_model, the_f_df_test should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), None, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=None,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_f_df_test is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_f_df_test is None or incorrect type.", context.exception.args)
+
+        # add the_f_df_test
+        argument_dict['the_f_df_test'] = the_f_df_train
 
         # add the_f_df_test, the_t_var_test should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=None,
-                             the_t_var_test=None,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_t_var_train is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_t_var_train is None or incorrect type.", context.exception.args)
+
+        # add the_t_var_train
+        argument_dict['the_t_var_train'] = the_t_var_train
 
         # add the_f_df_test, the_t_var_test should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=the_t_var_train,
-                             the_t_var_test=None,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_t_var_test is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_t_var_test is None or incorrect type.", context.exception.args)
+
+        # add the_t_var_test
+        argument_dict['the_t_var_test'] = the_t_var_test
 
         # add the_f_df_test, the_p_values should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=the_t_var_train,
-                             the_t_var_test=the_t_var_test,
-                             the_encoded_df=the_features_df,
-                             the_p_values=None,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("the_p_values is None or incorrect type.", context.exception.msg)
+        self.assertTrue("the_p_values is None or incorrect type.", context.exception.args)
+
+        # add the_p_values
+        argument_dict['the_p_values'] = p_values
 
         # add the_p_values, gridsearch should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=the_t_var_train,
-                             the_t_var_test=the_t_var_test,
-                             the_encoded_df=the_features_df,
-                             the_p_values=p_values,
-                             gridsearch=None,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("gridsearch is None or incorrect type.", context.exception.msg)
+        self.assertTrue("gridsearch is None or incorrect type.", context.exception.args)
+
+        # add gridsearch
+        argument_dict['gridsearch'] = knn_cv
 
         # add the_p_values, gridsearch should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=the_t_var_train,
-                             the_t_var_test=the_t_var_test,
-                             the_encoded_df=the_features_df,
-                             the_p_values=p_values,
-                             gridsearch=knn_cv,
-                             prepared_data=None,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("prepared_data is None or incorrect type.", context.exception.msg)
+        self.assertTrue("prepared_data is None or incorrect type.", context.exception.args)
+
+        # add prepared_data
+        argument_dict['prepared_data'] = the_features_df
 
         # add the_p_values, gridsearch should fail
         # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
-        with self.assertRaises(SyntaxError) as context:
+        with self.assertRaises(AttributeError) as context:
             # invoke the method
-            KNN_Model_Result(the_model=knn,
-                             the_target_variable='Churn',
-                             the_variables_list=the_features_df.columns.to_list(),
-                             the_f_df_train=the_f_df_train,
-                             the_f_df_test=the_f_df_test,
-                             the_t_var_train=the_t_var_train,
-                             the_t_var_test=the_t_var_test,
-                             the_encoded_df=the_features_df,
-                             the_p_values=p_values,
-                             gridsearch=knn_cv,
-                             prepared_data=the_features_df,
-                             cleaned_data=None)
+            KNN_Model_Result(argument_dict=argument_dict)
 
         # validate the error message.
-        self.assertEqual("cleaned_data is None or incorrect type.", context.exception.msg)
+        self.assertTrue("cleaned_data is None or incorrect type.", context.exception.args)
+
+        # add cleaned_data
+        argument_dict['cleaned_data'] = the_df
+
+        # add cleaned_data, the_df should fail
+        # verify we handle knn, 'Churn', the_features_df.columns.to_list(), the_f_df_test, None, the_features_df
+        with self.assertRaises(AttributeError) as context:
+            # invoke the method
+            KNN_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_df is missing.", context.exception.args)
+
+        # add the_df
+        argument_dict['the_df'] = the_df
+
+        # make sure there are no additional checks we skipped for the arguments
+        KNN_Model_Result(argument_dict=argument_dict)
 
     # test method for init()
     def test_init(self):
@@ -734,19 +664,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -1004,19 +941,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -1254,19 +1198,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -1505,19 +1456,27 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -1756,19 +1715,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -2007,19 +1973,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -2258,19 +2231,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -2509,19 +2489,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -2760,19 +2747,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -3011,19 +3005,27 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -3262,19 +3264,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -3513,19 +3522,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -3767,19 +3783,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -4045,19 +4068,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -4318,19 +4348,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -4589,19 +4626,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -4849,19 +4893,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -5102,19 +5153,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)
@@ -5358,19 +5416,26 @@ class test_KNN_Model_Result(unittest.TestCase):
         # fit the data again
         knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = knn
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_features_df.columns.to_list()
+        argument_dict['the_f_df_train'] = the_f_df_train
+        argument_dict['the_f_df_test'] = the_f_df_test
+        argument_dict['the_t_var_train'] = the_t_var_train
+        argument_dict['the_t_var_test'] = the_t_var_test
+        argument_dict['the_encoded_df'] = the_features_df
+        argument_dict['the_p_values'] = p_values
+        argument_dict['gridsearch'] = knn_cv
+        argument_dict['prepared_data'] = the_features_df
+        argument_dict['cleaned_data'] = the_df
+        argument_dict['the_df'] = the_df
+
         # create the result
-        the_knn_result = KNN_Model_Result(the_model=knn,
-                                          the_target_variable='Churn',
-                                          the_variables_list=the_features_df.columns.to_list(),
-                                          the_f_df_train=the_f_df_train,
-                                          the_f_df_test=the_f_df_test,
-                                          the_t_var_train=the_t_var_train,
-                                          the_t_var_test=the_t_var_test,
-                                          the_encoded_df=the_features_df,
-                                          the_p_values=p_values,
-                                          gridsearch=knn_cv,
-                                          prepared_data=the_features_df,
-                                          cleaned_data=the_df)
+        the_knn_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # run assertions on the result
         self.assertIsNotNone(the_knn_result)

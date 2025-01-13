@@ -134,11 +134,17 @@ class Linear_Model(ModelBase):
         # create a model using least squares
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # populate argument_dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = the_target_column
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create the result, and return it.
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable=the_target_column,
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # return statement
         return the_result

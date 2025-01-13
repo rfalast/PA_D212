@@ -1,5 +1,6 @@
 import os
 import unittest
+
 from copy import copy
 from os.path import exists
 from pathlib import Path
@@ -11,14 +12,14 @@ class test_FileUtils(unittest.TestCase):
     # constants
     EXISTING_DIRECTORY = "../../resources/Output/"
     NEW_DIRECTORY = "../../resources/Output/test/"
-    EXPECTED_BASE_DIRECTORY = "/Users/robertfalast/PycharmProjects/PA_209/util"
+    EXPECTED_BASE_DIRECTORY = "/Users/robertfalast/PycharmProjects/PA_212/util"
     OS_OPTIONS = ['macOS', 'Windows', 'Darwin']
     DIRECTORY_SEPERATOR = {"macOS": '/', "Windows": '\\\\', "Darwin": '/'}
     WIN_PATH = '\\foo\\bar\\some\\dir'
     MAC_PATH = "/foo/bar/some/dir"
 
-    WIN_PATH_TEST = "\\Users\\robertfalast\\PycharmProjects\\PA_209\\resources\\Input\\"
-    WIN_PATH_TEST = "/Users/robertfalast/PycharmProjects/PA_209/resources/Input/"
+    WIN_PATH_TEST = "\\Users\\robertfalast\\PycharmProjects\\PA_212\\resources\\Input\\"
+    WIN_PATH_TEST = "/Users/robertfalast/PycharmProjects/PA_212/resources/Input/"
 
     # test init method
     def test_init(self):

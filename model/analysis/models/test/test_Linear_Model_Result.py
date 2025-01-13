@@ -10,7 +10,7 @@ from statsmodels.regression.linear_model import RegressionResultsWrapper
 from model.Project_Assessment import Project_Assessment
 from model.analysis.models.Linear_Model import Linear_Model
 from model.analysis.models.Linear_Model_Result import Linear_Model_Result
-from model.constants.BasicConstants import D_209_CHURN, ANALYZE_DATASET_FULL, MT_LINEAR_REGRESSION
+from model.constants.BasicConstants import D_212_CHURN, ANALYZE_DATASET_FULL, MT_LINEAR_REGRESSION
 from model.constants.ModelConstants import LM_PREDICTOR, LM_P_VALUE, LM_COEFFICIENT, LM_FEATURE_NUM, \
     LM_STANDARD_ERROR, LM_T_STATISTIC, LM_VIF, LM_LS_CONF_INT, LM_RS_CONF_INT, LM_LAGRANGE_MULTIPLIER_STATISTIC, \
     LM_F_VALUE, LM_F_P_VALUE, LM_JARQUE_BERA_STATISTIC, LM_JARQUE_BERA_PROB, LM_JB_SKEW, LM_JS_KURTOSIS
@@ -23,7 +23,7 @@ from util.CSV_loader import CSV_Loader
 
 class test_Linear_Model_Result(unittest.TestCase):
     # test constants
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -32,7 +32,7 @@ class test_Linear_Model_Result(unittest.TestCase):
 
     column_drop_list = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction', 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # negative test method for __init__
     def test__init__negative(self):
@@ -55,15 +55,6 @@ class test_Linear_Model_Result(unittest.TestCase):
 
         # create a linear model
         linear_model = Linear_Model(dataset_analyzer=pa.analyzer)
-
-        # verify we handle None, None, None, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Linear_Model_Result(the_regression_wrapper=None, the_target_variable=None,
-                                the_variables_list=None, the_df=None)
-
-            # validate the error message.
-            self.assertTrue("the_regression_wrapper is None or incorrect type." in context.exception)
 
         # get the list of columns
         the_variable_columns = linear_model.encoded_df.columns.to_list()
@@ -107,32 +98,129 @@ class test_Linear_Model_Result(unittest.TestCase):
         # get the dataframe
         the_df = linear_model.encoded_df[the_variable_columns].astype(float)
 
-        # verify we handle model, None, None, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Linear_Model_Result(the_regression_wrapper=model, the_target_variable=None,
-                                the_variables_list=None, the_df=None)
+        # create the argument_dict
+        argument_dict = dict()
 
-            # validate the error message.
-            self.assertTrue("the_target_variable is None or incorrect type." in context.exception)
+        # verify we handle argument_dict being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=None)
 
-        # verify we handle model, 'Churn', None, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Linear_Model_Result(the_regression_wrapper=model, the_target_variable='Churn',
-                                the_variables_list=None, the_df=None)
+        # validate the error message.
+        self.assertTrue("argument_dict is None or incorrect type." in context.exception.args)
 
-            # validate the error message.
-            self.assertTrue("the_regression_wrapper is None or incorrect type." in context.exception)
+        # verify we handle None for the_model key
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
 
-        # verify we handle model, 'Churn', the_variable_columns, None
-        with self.assertRaises(SyntaxError) as context:
-            # invoke the method
-            Linear_Model_Result(the_regression_wrapper=model, the_target_variable='Churn',
-                                the_variables_list=the_variable_columns, the_df=None)
+        # validate the error message.
+        self.assertTrue("the_model is missing." in context.exception.args)
 
-            # validate the error message.
-            self.assertTrue("the_df is None or incorrect type." in context.exception)
+        # add the_model to the argument_dict
+        argument_dict['the_model'] = linear_model
+
+        # verify we handle the_target_variable key being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_target_variable is missing." in context.exception.args)
+
+        # add the_target_variable to the argument_dict
+        argument_dict['the_target_variable'] = None
+
+        # verify we handle the_variables_list key being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_variables_list is missing." in context.exception.args)
+
+        # add the_target_variable to the argument_dict
+        argument_dict['the_variables_list'] = None
+
+        # verify we handle the_df being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_df is missing." in context.exception.args)
+
+        # add the_target_variable to the argument_dict
+        argument_dict['the_df'] = None
+
+        # verify we handle the_target_variable being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_target_variable is None or incorrect type." in context.exception.args)
+
+        # add the_target_variable to the argument_dict
+        argument_dict['the_target_variable'] = 'Churn'
+
+        # verify we handle the_variables_list being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_variables_list is None or incorrect type." in context.exception.args)
+
+        # add the_target_variable to the argument_dict
+        argument_dict['the_variables_list'] = the_variable_columns
+
+        # verify we handle the_encoded_df being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_encoded_df is None or incorrect type." in context.exception.args)
+
+        # add the_df to the argument_dict
+        argument_dict['the_df'] = the_df
+
+        # verify we handle the_model being None
+        with self.assertRaises(AttributeError) as context:
+            Linear_Model_Result(argument_dict=argument_dict)
+
+        # validate the error message.
+        self.assertTrue("the_model is None or incorrect type." in context.exception.args)
+
+        # add the_df to the argument_dict
+        argument_dict['the_model'] = model
+
+        # verify that the test doesn't miss anything else
+        Linear_Model_Result(argument_dict=argument_dict)
+
+        #
+        #
+        # # below here is useless...
+        #
+        # # verify we handle model, None, None, None
+        # with self.assertRaises(SyntaxError) as context:
+        #     # invoke the method
+        #     Linear_Model_Result(the_regression_wrapper=model, the_target_variable=None,
+        #                         the_variables_list=None, the_df=None)
+        #
+        #     # validate the error message.
+        #     self.assertTrue("the_target_variable is None or incorrect type." in context.exception)
+        #
+        # # verify we handle model, 'Churn', None, None
+        # with self.assertRaises(SyntaxError) as context:
+        #     # invoke the method
+        #     Linear_Model_Result(the_regression_wrapper=model, the_target_variable='Churn',
+        #                         the_variables_list=None, the_df=None)
+        #
+        #     # validate the error message.
+        #     self.assertTrue("the_regression_wrapper is None or incorrect type." in context.exception)
+        #
+        # # verify we handle model, 'Churn', the_variable_columns, None
+        # with self.assertRaises(SyntaxError) as context:
+        #     # invoke the method
+        #     Linear_Model_Result(the_regression_wrapper=model, the_target_variable='Churn',
+        #                         the_variables_list=the_variable_columns, the_df=None)
+        #
+        #     # validate the error message.
+        #     self.assertTrue("the_df is None or incorrect type." in context.exception)
 
     # test method for __init__
     def test__init__(self):
@@ -195,11 +283,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -266,11 +360,18 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -345,11 +446,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -421,11 +528,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -505,11 +618,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -608,11 +727,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -733,11 +858,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -822,11 +953,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -919,11 +1056,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)
@@ -1026,11 +1169,17 @@ class test_Linear_Model_Result(unittest.TestCase):
         # create a model
         model = sm.OLS(y, X2).fit()
 
+        # create the argument_dict
+        argument_dict = dict()
+
+        # add the values to the argument dict
+        argument_dict['the_model'] = model
+        argument_dict['the_target_variable'] = 'Churn'
+        argument_dict['the_variables_list'] = the_variable_columns
+        argument_dict['the_df'] = X
+
         # create Linear_Model_Result
-        the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                         the_target_variable='Churn',
-                                         the_variables_list=the_variable_columns,
-                                         the_df=X)
+        the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # run assertions
         self.assertIsNotNone(the_result)

@@ -8,7 +8,7 @@ from pandas.core.dtypes.common import is_float_dtype, is_object_dtype, is_bool_d
 from model.Project_Assessment import Project_Assessment
 from model.analysis.models.Linear_Model import Linear_Model
 from model.analysis.models.Linear_Model_Result import Linear_Model_Result
-from model.constants.BasicConstants import DEFAULT_INDEX_NAME, ANALYZE_DATASET_FULL, D_209_CHURN, MT_LINEAR_REGRESSION
+from model.constants.BasicConstants import DEFAULT_INDEX_NAME, ANALYZE_DATASET_FULL, D_212_CHURN, MT_LINEAR_REGRESSION
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Detector import Detector
 from model.constants.DatasetConstants import UNIQUE_COLUMN_LIST_KEY
@@ -38,7 +38,7 @@ class test_Detector(unittest.TestCase):
     VALID_INT_COLUMN_UNIQUE_2 = "Unnamed: 0"
     VALID_OBJ_COLUMN_UNIQUE_1 = "Customer_id"
 
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
     OVERRIDE_PATH = "../../../resources/Output/"
 
     field_rename_dict = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
@@ -54,7 +54,7 @@ class test_Detector(unittest.TestCase):
     VALID_COLUMN_DROP_LIST_2 = ['Zip', 'Lat', 'Lng', 'Customer_id', 'Interaction',
                                 'State', 'UID', 'County', 'Job', 'City']
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test the init() method
     def test_init(self):

@@ -4,7 +4,7 @@ from model.analysis.models.ModelBase import ModelBase
 from model.constants.BasicConstants import MT_KNN_CLASSIFICATION
 
 
-# Linear Model tools
+# KNN Model tools
 class KNN_Model(ModelBase):
 
     # init method

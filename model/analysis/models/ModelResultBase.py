@@ -18,11 +18,11 @@ class ModelResultBase(BaseModel):
 
         # run validations
         if not isinstance(the_target_variable, str):
-            raise SyntaxError("the_target_variable is None or incorrect type.")
+            raise AttributeError("the_target_variable is None or incorrect type.")
         elif not isinstance(the_variables_list, list):
-            raise SyntaxError("the_variables_list is None or incorrect type.")
+            raise AttributeError("the_variables_list is None or incorrect type.")
         elif not isinstance(the_encoded_df, DataFrame):
-            raise SyntaxError("the_encoded_df is None or incorrect type.")
+            raise AttributeError("the_encoded_df is None or incorrect type.")
 
         # initialize logger
         self.logger = logging.getLogger(__name__)

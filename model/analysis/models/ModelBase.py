@@ -25,6 +25,7 @@ from model.constants.BasicConstants import MT_OPTIONS, MT_LOGISTIC_REGRESSION, M
 from model.constants.DatasetConstants import INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY
 from model.constants.ModelConstants import LM_INITIAL_MODEL, LM_FINAL_MODEL, LM_STEP, LF_ELIM_REASON_VIF, \
     LF_ELIM_REASON_P_VALUE, X_TRAIN, X_TEST, Y_TRAIN, Y_TEST, X_ORIGINAL
+from util.Model_Result_Populator import Model_Result_Populator
 
 
 class ModelBase(BaseModel):
@@ -91,6 +92,8 @@ class ModelBase(BaseModel):
         # variable declaration
         the_target_df = None
         the_current_features_df = None
+        argument_dict = None
+        mrp = Model_Result_Populator()
 
         # check if we have a logistic regression
         if model_type == MT_LOGISTIC_REGRESSION:
@@ -109,11 +112,14 @@ class ModelBase(BaseModel):
             # get the fitted model
             fitted_model = logistic_regression.fit()
 
+            # create the argument_dict
+            mrp.populate_storage(the_key="the_model", the_item=fitted_model)
+            mrp.populate_storage(the_key="the_target_variable", the_item=the_target_column)
+            mrp.populate_storage(the_key="the_variables_list", the_item=current_features)
+            mrp.populate_storage(the_key="the_df", the_item=the_current_features_df)
+
             # create the result, and return it.
-            self.the_result = Logistic_Model_Result(the_regression_wrapper=fitted_model,
-                                                    the_target_variable=the_target_column,
-                                                    the_variables_list=current_features,
-                                                    the_df=the_current_features_df)
+            self.the_result = Logistic_Model_Result(mrp.get_storage())
 
         # check if we are a KNN Model
         elif model_type == MT_KNN_CLASSIFICATION:
@@ -180,19 +186,26 @@ class ModelBase(BaseModel):
             # fit the data again
             knn.fit(the_f_df_train, the_t_var_train.values.ravel())
 
-            # # create the result, and return it.  the call to knn.predict() is executed inside the model result.
-            self.the_result = KNN_Model_Result(the_model=knn,
-                                               the_target_variable=the_target_column,
-                                               the_variables_list=current_features,
-                                               the_f_df_train=the_f_df_train,
-                                               the_f_df_test=the_f_df_test,
-                                               the_t_var_train=the_t_var_train,
-                                               the_t_var_test=the_t_var_test,
-                                               the_encoded_df=the_f_df_test_orig,
-                                               the_p_values=p_values,
-                                               gridsearch=knn_cv,
-                                               prepared_data=the_current_features_df,
-                                               cleaned_data=self.encoded_df)
+            # create the argument_dict
+            argument_dict = dict()
+
+            # populate argument_dict
+            argument_dict['the_model'] = knn
+            argument_dict['the_target_variable'] = the_target_column
+            argument_dict['the_variables_list'] = current_features
+            argument_dict['the_f_df_train'] = the_f_df_train
+            argument_dict['the_f_df_test'] = the_f_df_test
+            argument_dict['the_t_var_train'] = the_t_var_train
+            argument_dict['the_t_var_test'] = the_t_var_test
+            argument_dict['the_encoded_df'] = the_f_df_test_orig
+            argument_dict['the_p_values'] = p_values
+            argument_dict['gridsearch'] = knn_cv
+            argument_dict['prepared_data'] = the_current_features_df
+            argument_dict['cleaned_data'] = self.encoded_df
+            argument_dict['the_df'] = self.encoded_df
+
+            # create the result
+            self.the_result = KNN_Model_Result(argument_dict=argument_dict)
 
         # check if we are a Random Forest Model
         elif model_type == MT_RF_REGRESSION:
@@ -257,19 +270,25 @@ class ModelBase(BaseModel):
             # Fit the grid search to the data
             grid_search.fit(X=the_f_df_train, y=the_t_var_train.values.ravel())
 
-            # create the result, and return it.  the call to knn.predict() is executed inside the model result.
-            self.the_result = Random_Forest_Model_Result(the_model=rfr,
-                                                         the_target_variable=the_target_column,
-                                                         the_variables_list=current_features,
-                                                         the_f_df_train=the_f_df_train,
-                                                         the_f_df_test=the_f_df_test,
-                                                         the_t_var_train=the_t_var_train,
-                                                         the_t_var_test=the_t_var_test,
-                                                         the_encoded_df=the_f_df_test_orig,
-                                                         the_p_values=p_values,
-                                                         gridsearch=grid_search,
-                                                         prepared_data=the_current_features_df,
-                                                         cleaned_data=self.encoded_df)
+            # create the argument_dict
+            argument_dict = dict()
+
+            # populate the argument dict
+            argument_dict['the_model'] = rfr
+            argument_dict['the_target_variable'] = the_target_column
+            argument_dict['the_variables_list'] = current_features
+            argument_dict['the_f_df_train'] = the_f_df_train
+            argument_dict['the_f_df_test'] = the_f_df_test
+            argument_dict['the_t_var_train'] = the_t_var_train
+            argument_dict['the_t_var_test'] = the_t_var_test
+            argument_dict['the_encoded_df'] = the_f_df_test_orig
+            argument_dict['the_p_values'] = p_values
+            argument_dict['gridsearch'] = grid_search
+            argument_dict['prepared_data'] = the_current_features_df
+            argument_dict['cleaned_data'] = self.encoded_df
+
+            # invoke the method
+            self.the_result = Random_Forest_Model_Result(argument_dict=argument_dict)
 
         # we have a linear regression
         else:
@@ -283,11 +302,17 @@ class ModelBase(BaseModel):
             # # create a model
             model = sm.OLS(the_target_df, the_current_features_df).fit()
 
+            # create the argument_dict
+            argument_dict = dict()
+
+            # populate the argument_dict
+            argument_dict['the_model'] = model
+            argument_dict['the_target_variable'] = the_target_column
+            argument_dict['the_variables_list'] = current_features
+            argument_dict['the_df'] = the_current_features_df
+
             # create the result, and return it.
-            self.the_result = Linear_Model_Result(the_regression_wrapper=model,
-                                                  the_target_variable=the_target_column,
-                                                  the_variables_list=current_features,
-                                                  the_df=the_current_features_df)
+            self.the_result = Linear_Model_Result(argument_dict=argument_dict)
 
         # return the result
         return self.the_result

@@ -10,7 +10,7 @@ from model.analysis.models.Linear_Model import Linear_Model
 from model.analysis.models.Logistic_Model import Logistic_Model
 from model.analysis.StatisticsGenerator import StatisticsGenerator
 from model.analysis.models.Random_Forest_Model import Random_Forest_Model
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, ANALYZE_DATASET_INITIAL, D_209_CHURN, D_209_MEDICAL, \
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, ANALYZE_DATASET_INITIAL, D_212_CHURN, D_212_MEDICAL, \
     LOG_FILE_LOCATION, ANALYSIS_TYPE, CHURN_CSV_FILE_LOCATION, MEDICAL_CSV_FILE_LOCATION, \
     CHURN_PREP_CSV_FILE_LOCATION, MT_OPTIONS, MT_LINEAR_REGRESSION, MT_LOGISTIC_REGRESSION, MT_KNN_CLASSIFICATION, \
     MT_RF_REGRESSION
@@ -63,8 +63,8 @@ class Project_Assessment(BaseModel):
         self.dataset_key = None  # dataset name
         self.base_directory = base_directory
         self.report_loc_override = report_loc_override
-        self.dataset_keys = {D_209_CHURN: self.base_directory + "resources/Input/churn_raw_data.csv",
-                             D_209_MEDICAL: self.base_directory + "resources/Input/medical_raw_data.csv"}
+        self.dataset_keys = {D_212_CHURN: self.base_directory + "resources/Input/churn_raw_data.csv",
+                             D_212_MEDICAL: self.base_directory + "resources/Input/medical_raw_data.csv"}
         self.r_gen = ReportGenerator(report_loc_override)
         self.CSV_FILE_LOCATION = None
         self.CSV_PREP_FILE_LOCATION = None
@@ -124,10 +124,10 @@ class Project_Assessment(BaseModel):
             self.original_df = self.csv_l.get_data_frame_from_csv(self.dataset_keys[dataset_name_key])
 
             # set the CSV_FILE_LOCATION based on the dataset_name_key variable
-            if dataset_name_key == D_209_CHURN:
+            if dataset_name_key == D_212_CHURN:
                 self.CSV_FILE_LOCATION = CHURN_CSV_FILE_LOCATION
                 self.CSV_PREP_FILE_LOCATION = CHURN_PREP_CSV_FILE_LOCATION
-            elif dataset_name_key == D_209_MEDICAL:
+            elif dataset_name_key == D_212_MEDICAL:
                 self.CSV_FILE_LOCATION = MEDICAL_CSV_FILE_LOCATION
             else:
                 raise RuntimeError("unknown dataset_name_key, unable to set CSV_FILE_LOCATION variable.")

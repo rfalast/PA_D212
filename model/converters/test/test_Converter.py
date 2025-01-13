@@ -5,16 +5,14 @@ import numpy as np
 import pandas as pd
 
 from pandas import DataFrame, Series
-from pandas._testing import assert_frame_equal
 from pandas.core.dtypes.common import is_float_dtype
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
 from model.Project_Assessment import Project_Assessment
 from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.KNN_Model import KNN_Model
-from model.constants.BasicConstants import TIMEZONE_DICTIONARY, TIMEZONE_COLUMN, D_209_CHURN, ANALYZE_DATASET_FULL, \
+from model.constants.BasicConstants import TIMEZONE_DICTIONARY, TIMEZONE_COLUMN, D_212_CHURN, ANALYZE_DATASET_FULL, \
     MT_KNN_CLASSIFICATION
 from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Detector import Detector
@@ -42,7 +40,7 @@ class test_Converter(unittest.TestCase):
     VALID_INT_NAN_2 = "Children"
     UN_NAMED_COLUMN = "Unnamed: 0"
 
-    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_209/"
+    VALID_BASE_DIR = "/Users/robertfalast/PycharmProjects/PA_212/"
 
     VALID_FIELD_DICT = {"Item1": "Timely_Response", "Item2": "Timely_Fixes", "Item3": "Timely_Replacements",
                         "Item4": "Reliability", "Item5": "Options", "Item6": "Respectful_Response",
@@ -60,7 +58,7 @@ class test_Converter(unittest.TestCase):
 
     OVERRIDE_PATH = "../../../resources/Output"
 
-    CHURN_KEY = D_209_CHURN
+    CHURN_KEY = D_212_CHURN
 
     # test the convert_to_boolean() method and the way it handles errors.
     def __init__(self, methodName: str = ...):
