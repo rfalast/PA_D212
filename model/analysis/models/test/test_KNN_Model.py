@@ -17,7 +17,8 @@ from model.analysis.DatasetAnalyzer import DatasetAnalyzer
 from model.analysis.Variable_Encoder import Variable_Encoder
 from model.analysis.models.KNN_Model import KNN_Model
 from model.analysis.models.KNN_Model_Result import KNN_Model_Result
-from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, MT_KNN_CLASSIFICATION
+from model.constants.BasicConstants import ANALYZE_DATASET_FULL, D_212_CHURN, MT_KNN_CLASSIFICATION, \
+    MT_K_MEANS_CLUSTERING
 from model.constants.DatasetConstants import INT64_COLUMN_KEY, FLOAT64_COLUMN_KEY, BOOL_COLUMN_KEY, OBJECT_COLUMN_KEY
 
 
@@ -117,7 +118,7 @@ class test_KNN_Model(unittest.TestCase):
         pa.update_column_names(self.field_rename_dict)
         pa.drop_column_from_dataset(self.column_drop_list)
         pa.analyze_dataset(ANALYZE_DATASET_FULL)
-        pa.clean_up_outliers(model_type=MT_KNN_CLASSIFICATION, max_p_value=0.001)
+        pa.clean_up_outliers(model_type=MT_K_MEANS_CLUSTERING, max_p_value=0.001)
         pa.analyze_dataset(ANALYZE_DATASET_FULL)
 
         # get the base dataframe
